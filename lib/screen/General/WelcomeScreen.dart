@@ -63,11 +63,6 @@ class _welcomeScreenState extends State<welcomeScreen> {
               SizedBox(
                 height: displayHeight(context) * 0.35,
               ),
-              Image.asset(
-                'images/wave.png',
-                width: displayWidth(context) * 0.5,
-                fit: BoxFit.cover,
-              ),
               Expanded(
                 child: Image.asset(
                   'images/openLoad.gif',
@@ -91,7 +86,7 @@ class _welcomeScreenState extends State<welcomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Made with ',
+                          ' Inbuilt India',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: displayWidth(context) * 0.04,
@@ -102,7 +97,7 @@ class _welcomeScreenState extends State<welcomeScreen> {
                           color: Colors.red,
                         ),
                         Text(
-                          ' in India',
+                          ' By Tilak',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: displayWidth(context) * 0.04,
@@ -120,7 +115,7 @@ class _welcomeScreenState extends State<welcomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "Wave ",
+                          "Foodizo ",
                           style: TextStyle(
                               color: Colors.black45,
                               fontWeight: FontWeight.w500,

@@ -8,6 +8,8 @@ import 'package:nexus/screen/Chat/chatScreen.dart';
 import 'package:nexus/screen/Posts/feedScreen.dart';
 import 'package:nexus/screen/ProfileDetails/myProfile.dart';
 import 'package:nexus/screen/General/searchScreen.dart';
+import 'package:nexus/screen/personalvideo/VideoScreen.dart';
+import 'package:nexus/screen/personalvideo/add_video_screen.dart';
 import 'package:nexus/utils/devicesize.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +19,8 @@ class homescreen extends StatelessWidget {
     searchScreen(),
     chatScreen(),
     profiletScreen(),
+    VideoScreen(),
+    AddVideoScreen(),
   ];
 
   @override
@@ -24,6 +28,7 @@ class homescreen extends StatelessWidget {
     int screenIndex =
         Provider.of<screenIndexProvider>(context).fetchCurrentIndex;
     return Scaffold(
+      // appBar: AppBar(leading: Drawer(),),
       body: Container(
         height: displayHeight(context),
         width: displayWidth(context),
@@ -37,7 +42,7 @@ class homescreen extends StatelessWidget {
               child: screens[screenIndex],
             ),
             Positioned(
-                bottom: displayHeight(context) * 0.005,
+                bottom: displayHeight(context) * 0.01,
                 child: Card(
                   elevation: 6.0,
                   shape: RoundedRectangleBorder(
@@ -57,7 +62,7 @@ class homescreen extends StatelessWidget {
                             child: (screenIndex == 0)
                                 ? CircleAvatar(
                                     radius: displayWidth(context) * 0.05,
-                                    backgroundColor: Colors.orangeAccent,
+                                    backgroundColor: Colors.greenAccent,
                                     child: const Icon(
                                       Icons.home,
                                       color: Colors.white,
@@ -77,7 +82,7 @@ class homescreen extends StatelessWidget {
                             child: (screenIndex == 1)
                                 ? CircleAvatar(
                                     radius: displayWidth(context) * 0.05,
-                                    backgroundColor: Colors.orangeAccent,
+                                    backgroundColor: Colors.greenAccent,
                                     child: const Icon(
                                       Icons.search,
                                       color: Colors.white,
@@ -110,7 +115,7 @@ class homescreen extends StatelessWidget {
                             child: (screenIndex == 2)
                                 ? CircleAvatar(
                                     radius: displayWidth(context) * 0.05,
-                                    backgroundColor: Colors.orangeAccent,
+                                    backgroundColor: Colors.greenAccent,
                                     child: const Icon(
                                       Icons.mail,
                                       color: Colors.white,
@@ -127,10 +132,30 @@ class homescreen extends StatelessWidget {
                                     },
                                   )),
                         Expanded(
+                            child: (screenIndex == 4)
+                                ? CircleAvatar(
+                              radius: displayWidth(context) * 0.05,
+                              backgroundColor: Colors.greenAccent,
+                              child: const Icon(
+                                Icons.video_call,
+                                color: Colors.white,
+                              ),
+                            )
+                                : IconButton(
+                              iconSize: displayWidth(context) * 0.06,
+                              color: Colors.black54,
+                              icon: const Icon(Icons.video_call),
+                              onPressed: () {
+                                Provider.of<screenIndexProvider>(context,
+                                    listen: false)
+                                    .updateIndex(4);
+                              },
+                            )),
+                        Expanded(
                             child: (screenIndex == 3)
                                 ? CircleAvatar(
                                     radius: displayWidth(context) * 0.05,
-                                    backgroundColor: Colors.orangeAccent,
+                                    backgroundColor: Colors.greenAccent,
                                     child: const Icon(
                                       Icons.person,
                                       color: Colors.white,
@@ -146,6 +171,26 @@ class homescreen extends StatelessWidget {
                                           .updateIndex(3);
                                     },
                                   )),
+                        Expanded(
+                            child: (screenIndex == 5)
+                                ? CircleAvatar(
+                              radius: displayWidth(context) * 0.05,
+                              backgroundColor: Colors.greenAccent,
+                              child: const Icon(
+                                Icons.upload_file,
+                                color: Colors.white,
+                              ),
+                            )
+                                : IconButton(
+                              iconSize: displayWidth(context) * 0.06,
+                              color: Colors.black54,
+                              icon: const Icon(Icons.upload_file),
+                              onPressed: () {
+                                Provider.of<screenIndexProvider>(context,
+                                    listen: false)
+                                    .updateIndex(5);
+                              },
+                            )),
                       ],
                     ),
                   ),

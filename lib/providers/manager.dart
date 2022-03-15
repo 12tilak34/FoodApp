@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:nexus/models/NotificationModel.dart';
 import 'package:nexus/models/PostModel.dart';
 import 'package:nexus/models/StoryModel.dart';
+import 'package:nexus/models/VideoModel.dart';
 import 'package:nexus/models/userModel.dart';
 import 'package:nexus/utils/constants.dart';
 import 'package:http/http.dart' as http;
@@ -34,16 +35,44 @@ class manager extends ChangeNotifier {
 
   Map<String, PostModel> get fetchMyPostsMap => myPostsMap;
 
+  Map<String, VideoModel> myVideoMap = {};
+
+  Map<String, VideoModel> yourVideoMap = {};
+
+  Map<String, VideoModel> get fetchMyVideoMap => myVideoMap;
+
+  Map<String, VideoModel> get fetchYourVideoMap => yourVideoMap;
+
+  Map<String, VideoModel> feedVideoMap = {};
+
+  Map<String, VideoModel> get fetchFeedVideoMap => feedVideoMap;
+
+  List<PostModel> savedPostList = [];
+
   List<PostModel> feedPostList = [];
 
   List<PostModel> yourPostsList = [];
 
   List<PostModel> myPostsList = [];
 
-  List<PostModel> savedPostList = [];
+  List<VideoModel> feedVideoList = [];
+
+  List<VideoModel> yourVideoList = [];
+
+  List<VideoModel> myVideoList = [];
 
   List<PostModel> get fetchSavedPostList {
     return [...savedPostList];
+  }
+
+  List<VideoModel> get fetchMyVideoList {
+    myVideoList.sort((a, b) => b.dateOfPost.compareTo(a.dateOfPost));
+    return [...myVideoList];
+  }
+
+  List<VideoModel> get fetchYourVideoList {
+    yourVideoList.sort((a, b) => b.dateOfPost.compareTo(a.dateOfPost));
+    return [...yourVideoList];
   }
 
   List<PostModel> get fetchMyPostsList {
@@ -58,6 +87,10 @@ class manager extends ChangeNotifier {
 
   List<PostModel> get fetchFeedPostList {
     return [...feedPostList];
+  }
+
+  List<VideoModel> get fetchFeedVideoList {
+    return [...feedVideoList];
   }
 
   Map<String, NexusUser> allUsers = {};
@@ -171,6 +204,45 @@ class manager extends ChangeNotifier {
         if(timeBetweenInDays(p.dateOfPost, DateTime.now())<=6 && !(p.hiddenFrom.contains(myUid))){
           feedPostMap[key] = p;
           list.add(p);
+        }
+      });
+    }
+    return list;
+  }
+
+  //Function to set videos that will be displayed on your feed screen
+  Future<void> setFeedVideos(String myUid) async {
+    List<VideoModel> tempVideoList = [];
+    List<dynamic> myFollowing = allUsers[myUid]!.followings;
+    for (int i = 0; i < myFollowing.length; ++i) {
+      String uid = myFollowing[i].toString();
+      tempVideoList.addAll(await getListOfVideoUsingUid(myUid,uid));
+    }
+    feedVideoList = tempVideoList;
+    feedVideoList.sort((a, b) => b.dateOfPost.compareTo(a.dateOfPost));
+    notifyListeners();
+  }
+
+  // Funtion that returns a future list of videos using a provided uid -> only used by setFeedVideo()
+  Future<List<VideoModel>> getListOfVideoUsingUid(String myUid,String uid) async {
+    List<VideoModel> list = [];
+    final String apiForVideos = constants().fetchApi + 'videos/${uid}.json';
+    final responseOfVideo = await http.get(Uri.parse(apiForVideos));
+    if (json.decode(responseOfVideo.body) != null) {
+      final postData =
+      json.decode(responseOfVideo.body) as Map<String, dynamic>;
+      postData.forEach((key, value) {
+        VideoModel v = VideoModel(
+            hiddenFrom: value['hiddenFrom']??[],
+            caption: value['caption'],
+            dateOfPost: DateTime.parse(value['dateOfPost']),
+            video: value['video'],
+            uid: value['uid'],
+            video_id: key,
+            likes: value['likes'] ?? []);
+        if(timeBetweenInDays(v.dateOfPost, DateTime.now())<=6 && !(v.hiddenFrom.contains(myUid))){
+          feedVideoMap[key] = v;
+          list.add(v);
         }
       });
     }
@@ -377,6 +449,57 @@ class manager extends ChangeNotifier {
     yourPostsList = tempList;
     yourPostsMap = tempMap;
     notifyListeners();
+  }
+
+  // Function to add new video
+  Future<void> addNewVideo(String caption, String uid, File video) async {
+    final String api = constants().fetchApi + 'videos/${uid}.json';
+    try {
+      var random = Random();
+      DateTime datetime = DateTime.now();
+      final String dateOfPost = datetime.toString();
+      int random1 = random.nextInt(999999);
+      int random2 = random.nextInt(555555);
+      int random3 = random.nextInt(101);
+      int random4 = random.nextInt(540);
+      final String name = '${random1}${random2}${random3}${random4}';
+      final String location = '${uid}${name}';
+      final Reference storageReference =
+      FirebaseStorage.instance.ref().child(location);
+      final UploadTask uploadTask = storageReference.putFile(video);
+      final TaskSnapshot taskSnapshot = await uploadTask;
+      taskSnapshot.ref.getDownloadURL().then((value) async {
+        http
+            .post(Uri.parse(api),
+            body: json.encode({
+              'caption': caption,
+              'video': value,
+              'uid': uid,
+              'likes': [],
+              'dateOfPost': dateOfPost,
+            }))
+            .then((v) {
+          final videodata = json.decode(v.body) as Map<String, dynamic>;
+          myVideoMap[videodata['name']] = VideoModel(
+              hiddenFrom: [],
+              caption: caption,
+              dateOfPost: datetime,
+              video: value,
+              uid: uid,
+              video_id: videodata['name'],
+              likes: []);
+          myVideoList.add(VideoModel(
+              hiddenFrom: [],
+              caption: caption,
+              dateOfPost: datetime,
+              video: value,
+              uid: uid,
+              video_id: videodata['name'],
+              likes: []));
+          notifyListeners();
+        });
+      });
+    } catch (error) {}
   }
 
   // Function to add new post
@@ -960,9 +1083,7 @@ class manager extends ChangeNotifier {
     } catch (error) {}
   }
 
-
   // *****  Post reporting functions  **** ////
-
 
   Future<void> reportPost(String myUid,String report,String postOwnerId,String postId)async{
     if(!feedPostMap[postId]!.hiddenFrom.contains(myUid)) {

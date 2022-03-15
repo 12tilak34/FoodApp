@@ -82,7 +82,7 @@ class _chatScreenState extends State<chatScreen> {
         child: Container(
           height: displayHeight(context),
           width: displayWidth(context),
-          color: Colors.indigo[600],
+          color: Colors.deepOrange[600],
           child: Padding(
             padding: const EdgeInsets.only(top: 30.0),
             child: SingleChildScrollView(

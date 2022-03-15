@@ -26,7 +26,7 @@ class verifyEmailScreen extends StatelessWidget {
               ),
               const Opacity(opacity: 0.0, child: Divider()),
               Text(
-                'Welcome to Wave',
+                'Welcome to Foodizo',
                 style: TextStyle(
                     color: Colors.orange,
                     fontFamily: "Pacifico",

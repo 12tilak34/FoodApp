@@ -10,6 +10,7 @@ import 'package:nexus/models/PostModel.dart';
 import 'package:nexus/models/StoryModel.dart';
 import 'package:nexus/models/userModel.dart';
 import 'package:nexus/providers/manager.dart';
+
 import 'package:nexus/screen/General/notificationScreen.dart';
 import 'package:nexus/screen/Posts/usersWhoLikedScreen.dart';
 import 'package:nexus/screen/Story/uploadStory.dart';
@@ -30,14 +31,12 @@ class feedScreen extends StatefulWidget {
 }
 
 class _feedScreenState extends State<feedScreen> {
-  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
-      GlobalKey<LiquidPullToRefreshState>();
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey = GlobalKey<LiquidPullToRefreshState>();
   User? currentUser;
   bool? init;
   bool? loadScreen = false;
   File? story;
-  final Future<SharedPreferences> localStoreInstance =
-      SharedPreferences.getInstance();
+  final Future<SharedPreferences> localStoreInstance = SharedPreferences.getInstance();
 
   final List<String> months = [
     'January',
@@ -159,17 +158,20 @@ class _feedScreenState extends State<feedScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+
                               Expanded(
                                 child: Padding(
                                     padding: const EdgeInsets.only(top: 0),
-                                    child: Text(
-                                      'Wave',
-                                      style: TextStyle(
-                                          fontFamily: 'Pacifico',
-                                          color: Colors.orange,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize:
-                                              displayWidth(context) * 0.069),
+                                    child: Center(
+                                      child: Text(
+                                        'Foodizo',
+                                        style: TextStyle(
+                                            fontFamily: 'Pacifico',
+                                            color: Colors.orange,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize:
+                                                displayWidth(context) * 0.069),
+                                      ),
                                     )),
                               ),
                               GestureDetector(
@@ -355,7 +357,7 @@ class _feedScreenState extends State<feedScreen> {
                                                       0.18,
                                                   child: Center(
                                                     child: Text(
-                                                      'Add Story',
+                                                      'Snack',
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: TextStyle(
@@ -535,8 +537,9 @@ class _suggestionCardsState extends State<suggestionCards> {
     final List<NexusUser>? suggestedUser = allUsers.values
         .toList()
         .where((element) =>
-            element.uid != widget.currentUser!.uid && !allUsers[widget.currentUser!.uid]!.blocked.contains(element.uid) &&
-                !allUsers[element.uid]!.blocked.contains(widget.currentUser!.uid) &&
+            element.uid != widget.currentUser!.uid &&
+            !allUsers[widget.currentUser!.uid]!.blocked.contains(element.uid) &&
+            !allUsers[element.uid]!.blocked.contains(widget.currentUser!.uid) &&
             !(element.followers.contains(widget.currentUser!.uid)))
         .toList();
     suggestedUser!
@@ -550,7 +553,7 @@ class _suggestionCardsState extends State<suggestionCards> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'Welcome to Wave',
+            'Welcome To Foodizo',
             style: TextStyle(
                 color: Colors.orange,
                 fontWeight: FontWeight.bold,
@@ -562,7 +565,7 @@ class _suggestionCardsState extends State<suggestionCards> {
                 height: displayHeight(context) * 0.01,
               )),
           const Text(
-            'Follow people to start seeing posts.',
+            'Follow people to start seeing posts \n        and pull down to refresh.',
             style: TextStyle(color: Colors.black45),
           ),
           Opacity(
@@ -852,7 +855,7 @@ Widget displayPostsForFeed(
         height: displayHeight(context) * 0.685,
         width: displayWidth(context) * 0.84,
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(5.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -956,7 +959,8 @@ Widget displayPostsForFeed(
                                                 actions: [
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(8.0),
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child: Center(
                                                         child: TextButton(
                                                       child: const Text(
@@ -972,7 +976,8 @@ Widget displayPostsForFeed(
                                                   ),
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(8.0),
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child: Center(
                                                         child: TextButton(
                                                       onPressed: () async {
@@ -1003,15 +1008,22 @@ Widget displayPostsForFeed(
                                         onTap: () {
                                           Navigator.pop(context);
                                           showModalBottomSheet(
-                                              shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(15),
-                                                      topRight:
-                                                          Radius.circular(15))),
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                              topLeft: Radius
+                                                                  .circular(15),
+                                                              topRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          15))),
                                               context: context,
                                               builder: (BuildContext cx) {
-                                                return reportContainer(postId: post.post_id,myUid: myUid,postOwnerId: post.uid);
+                                                return reportContainer(
+                                                    postId: post.post_id,
+                                                    myUid: myUid,
+                                                    postOwnerId: post.uid);
                                               });
                                         },
                                       ),
@@ -1254,5 +1266,3 @@ Widget displayPostsForFeed(
     ),
   );
 }
-
-

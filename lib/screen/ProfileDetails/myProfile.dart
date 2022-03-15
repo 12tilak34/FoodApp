@@ -26,6 +26,7 @@ class profiletScreen extends StatefulWidget {
 }
 
 class _profiletScreenState extends State<profiletScreen> {
+
   final authservice _auth = authservice(FirebaseAuth.instance);
   bool viewPosts = true;
   File? imagefile;
@@ -64,7 +65,6 @@ class _profiletScreenState extends State<profiletScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -87,6 +87,7 @@ class _profiletScreenState extends State<profiletScreen> {
 
     Map<String, PostModel>? savedPosts =
         Provider.of<manager>(context).fetchSavedPostsMap;
+
     Future pickImageForCoverPicture() async {
       final pickedFile = await picker.pickImage(source: ImageSource.gallery);
       if (mounted) {
@@ -576,7 +577,7 @@ class _profiletScreenState extends State<profiletScreen> {
                                             displayWidth(context) * 0.036),
                                   )
                                 ],
-                              ))
+                              ),),
                             ],
                           ),
                         ),

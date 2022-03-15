@@ -251,7 +251,7 @@ class _loginScreenState extends State<loginScreen> {
                                               decoration: const InputDecoration(
                                                 labelText: "Email",
                                                 hintText:
-                                                    "officialwave@gmail.com",
+                                                    "officialfoodizo@gmail.com",
                                               ),
                                               controller: email,
                                               validator: (value) {

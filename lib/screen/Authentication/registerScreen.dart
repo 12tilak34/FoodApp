@@ -84,7 +84,7 @@ class _registerScreenState extends State<registerScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                         child: Text(
-                          'Register to Wave !!',
+                          'Register to Foodizo !!',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

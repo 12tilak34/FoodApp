@@ -4,7 +4,6 @@ import 'package:nexus/models/userModel.dart';
 import 'package:nexus/providers/manager.dart';
 import 'package:nexus/screen/ProfileDetails/userProfile.dart';
 import 'package:nexus/utils/devicesize.dart';
-import 'package:nexus/utils/widgets.dart';
 import 'package:provider/provider.dart';
 
 class searchScreen extends StatefulWidget {
@@ -90,108 +89,112 @@ class _searchScreenState extends State<searchScreen> {
 
     return Scaffold(
         body: SafeArea(
-      child: Container(
-        height: displayHeight(context),
-        width: displayWidth(context),
-        color: Colors.white,
-        child: (screenLoading!)
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: displayHeight(context) * 0.2,
+      child: Stack(
+        children: [
+          Container(
+            height: displayHeight(context),
+            width: displayWidth(context),
+            color: Colors.white,
+            child: (screenLoading!)
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: displayHeight(context) * 0.2,
+                ),
+                Expanded(child: Image.asset('images/searchLoad.gif')),
+                Expanded(
+                  child: Text(
+                    'Fetching Profiles',
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: displayWidth(context) * 0.05,
+                        fontWeight: FontWeight.bold),
                   ),
-                  Expanded(child: Image.asset('images/searchLoad.gif')),
-                  Expanded(
-                    child: Text(
-                      'Fetching Profiles',
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: displayWidth(context) * 0.05,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
-              )
-            : SingleChildScrollView(
-                child: (Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: displayHeight(context) * 0.08,
-                      width: displayWidth(context),
-                      //color: Colors.red,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8.0, bottom: 8.0, left: 20, right: 20),
-                        child: Center(
-                          child: TextFormField(
-                            onChanged: (value) {
-                              if (value.isEmpty) {
-                                setState(() {
-                                  displayList = [];
-                                });
-                              } else {
-                                List<NexusUser> tempList = list
-                                    .where((element) =>
-                                        (element.uid != currentUser!.uid) &&
-                                        (element.title.toLowerCase().contains(
-                                                value.toLowerCase()) ||
-                                            element.username
-                                                .toLowerCase()
-                                                .contains(value.toLowerCase())))
-                                    .toList();
-                                setState(() {
-                                  displayList = tempList;
-                                });
-                              }
-                            },
-                            controller: searchController,
-                            decoration: const InputDecoration(
-                              prefixIconColor: Colors.orange,
-                              suffixIcon: Icon(
-                                Icons.person,
-                                color: Colors.black45,
-                              ),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.orange,
-                              ),
-                              hintText: "Search",
+                )
+              ],
+            )
+                : SingleChildScrollView(
+              child: (Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    height: displayHeight(context) * 0.08,
+                    width: displayWidth(context),
+                    //color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 8.0, bottom: 8.0, left: 20, right: 20),
+                      child: Center(
+                        child: TextFormField(
+                          onChanged: (value) {
+                            if (value.isEmpty) {
+                              setState(() {
+                                displayList = [];
+                              });
+                            } else {
+                              List<NexusUser> tempList = list
+                                  .where((element) =>
+                              (element.uid != currentUser!.uid) &&
+                                  (element.title.toLowerCase().contains(
+                                      value.toLowerCase()) ||
+                                      element.username
+                                          .toLowerCase()
+                                          .contains(value.toLowerCase())))
+                                  .toList();
+                              setState(() {
+                                displayList = tempList;
+                              });
+                            }
+                          },
+                          controller: searchController,
+                          decoration: const InputDecoration(
+                            prefixIconColor: Colors.orange,
+                            suffixIcon: Icon(
+                              Icons.person,
+                              color: Colors.black45,
                             ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.orange,
+                            ),
+                            hintText: "Search",
                           ),
                         ),
                       ),
                     ),
-                    (displayList.isEmpty &&
-                            searchController!.text.toString().isNotEmpty)
-                        ? Center(
-                            child: Text(
-                              'No users found',
-                              style: TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: displayWidth(context) * 0.045),
-                            ),
-                          )
-                        : Container(
-                            height: displayHeight(context) * 0.82,
-                            width: displayWidth(context),
-                            // color: Colors.pink,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 16.0, right: 16, bottom: 16),
-                              child: ListView.builder(
-                                itemCount: displayList.length,
-                                itemBuilder: (context, index) {
-                                  return displayUserHeads(displayList[index]);
-                                },
-                              ),
-                            ),
-                          )
-                  ],
-                )),
-              ),
+                  ),
+                  (displayList.isEmpty &&
+                      searchController!.text.toString().isNotEmpty)
+                      ? Center(
+                    child: Text(
+                      'No users found',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: displayWidth(context) * 0.045),
+                    ),
+                  )
+                      : Container(
+                    height: displayHeight(context) * 0.82,
+                    width: displayWidth(context),
+                    // color: Colors.pink,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16, bottom: 16),
+                      child: ListView.builder(
+                        itemCount: displayList.length,
+                        itemBuilder: (context, index) {
+                          return displayUserHeads(displayList[index]);
+                        },
+                      ),
+                    ),
+                  )
+                ],
+              )),
+            ),
+          ),
+        ],
       ),
     ));
   }

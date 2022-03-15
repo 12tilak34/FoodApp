@@ -17,8 +17,6 @@ class authservice {
     await _auth.signOut();
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
 //sign in with email and password  !!
   Future<String?> signIn(
       {required String email, required String password}) async {
