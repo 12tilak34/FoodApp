@@ -2,10 +2,6 @@ import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 
 class VideoScreen extends StatefulWidget {
-  final String? videoUrl;
-
-  VideoScreen({this.videoUrl});
-
   @override
   _VideoScreenState createState() => _VideoScreenState();
 }
@@ -13,17 +9,19 @@ class VideoScreen extends StatefulWidget {
 class _VideoScreenState extends State<VideoScreen> {
   late BetterPlayerController _betterPlayerController;
   late BetterPlayerDataSource _betterPlayerDataSource;
+  final String? videoUrl =
+      "https://firebasestorage.googleapis.com/v0/b/foodizolatest.appspot.com/o/RwtmzFaN1HfgP6ZgfkzmKELWQjn1579935117155461?alt=media&token=34990122-76d5-40c0-b8d4-f35236a0270d";
 
   @override
   void initState() {
     BetterPlayerConfiguration betterPlayerConfiguration =
-    const BetterPlayerConfiguration(
-      aspectRatio: 16 / 9,
-      fit: BoxFit.contain,
+        const BetterPlayerConfiguration(
+      aspectRatio: 9 / 16,
+      fit: BoxFit.cover,
     );
     _betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
-      widget.videoUrl!,
+      videoUrl!,
       cacheConfiguration: const BetterPlayerCacheConfiguration(
         useCache: true,
         preCacheSize: 10 * 1024 * 1024,
@@ -53,6 +51,20 @@ class _VideoScreenState extends State<VideoScreen> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black87),
         backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await _betterPlayerController
+                  .setupDataSource(_betterPlayerDataSource);
+              await _betterPlayerController.play();
+            },
+            icon: Icon(Icons.play_arrow),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.next_plan_outlined),
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -60,28 +72,8 @@ class _VideoScreenState extends State<VideoScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: BetterPlayer(controller: _betterPlayerController),
-            ),
+            BetterPlayer(controller: _betterPlayerController),
             const Opacity(opacity: 0.0, child: Divider()),
-            TextButton.icon(
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.orange)),
-              icon: const Icon(
-                Icons.play_arrow_sharp,
-                color: Colors.white,
-              ),
-              label: const Text(
-                "Play video",
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () async {
-                await _betterPlayerController
-                    .setupDataSource(_betterPlayerDataSource);
-                await _betterPlayerController.play();
-              },
-            ),
           ],
         ),
       ),

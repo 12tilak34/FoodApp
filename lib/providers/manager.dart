@@ -890,6 +890,39 @@ class manager extends ChangeNotifier {
     }
   }
 
+  // Future<void> saveVideo(
+  //     VideoModel videoModel,
+  //     String myUid,
+  //     ) async {
+  //   String? saveId;
+  //   final String api = constants().fetchApi + 'saved/${myUid}.json';
+  //   try {
+  //     savedPostsMap[postModel.post_id] = postModel;
+  //
+  //     notifyListeners();
+  //     await http
+  //         .post(Uri.parse(api),
+  //         body: json.encode({
+  //           'op': postModel.uid,
+  //           'postId': postModel.post_id,
+  //         }))
+  //         .then((value) async {
+  //       final serverData = json.decode(value.body) as Map<String, dynamic>;
+  //       saveId = serverData['name'];
+  //     });
+  //     final String savePostApi =
+  //         constants().fetchApi + 'saved/${myUid}/${saveId!}.json';
+  //     await http.patch(Uri.parse(savePostApi),
+  //         body: json.encode({'saveId': saveId}));
+  //     savedPostsKeys[postModel.post_id] = saveId!;
+  //     notifyListeners();
+  //   } catch (error) {
+  //     if (savedPostsMap.containsKey(postModel.post_id)) {
+  //       savedPostsMap.remove(postModel.post_id);
+  //     }
+  //   }
+  // }
+
   Map<String, String> savedPostsKeys = {};
 
   Future<void> unsavePost(String postId, String myUid) async {

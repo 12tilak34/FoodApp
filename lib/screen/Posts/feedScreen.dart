@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,9 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nexus/models/NotificationModel.dart';
 import 'package:nexus/models/PostModel.dart';
 import 'package:nexus/models/StoryModel.dart';
+import 'package:nexus/models/VideoModel.dart';
 import 'package:nexus/models/userModel.dart';
 import 'package:nexus/providers/manager.dart';
-
 import 'package:nexus/screen/General/notificationScreen.dart';
 import 'package:nexus/screen/Posts/usersWhoLikedScreen.dart';
 import 'package:nexus/screen/Story/uploadStory.dart';
@@ -31,12 +32,14 @@ class feedScreen extends StatefulWidget {
 }
 
 class _feedScreenState extends State<feedScreen> {
-  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey = GlobalKey<LiquidPullToRefreshState>();
+  final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
+      GlobalKey<LiquidPullToRefreshState>();
   User? currentUser;
   bool? init;
   bool? loadScreen = false;
   File? story;
-  final Future<SharedPreferences> localStoreInstance = SharedPreferences.getInstance();
+  final Future<SharedPreferences> localStoreInstance =
+      SharedPreferences.getInstance();
 
   final List<String> months = [
     'January',
@@ -158,7 +161,6 @@ class _feedScreenState extends State<feedScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-
                               Expanded(
                                 child: Padding(
                                     padding: const EdgeInsets.only(top: 0),
@@ -922,7 +924,7 @@ Widget displayPostsForFeed(
                       VerticalDivider(
                         width: displayWidth(context) * 0.005,
                       ),
-                      (user.followers.length >= 25)
+                      (user.followers.length >= 4)
                           ? Icon(
                               Icons.verified,
                               color: Colors.orange[400],
@@ -1266,3 +1268,356 @@ Widget displayPostsForFeed(
     ),
   );
 }
+
+// Widget displayVideoForFeed(
+//     BuildContext context,
+//     VideoModel post,
+//     Map<String, dynamic> mapOfUsers,
+//     String myUid,
+//     List<String> months,
+//     Map<String, VideoModel> savedPosts) {
+//   DateTime dateTime = post.dateOfPost;
+//   String day = dateTime.day.toString();
+//   String year = dateTime.year.toString();
+//   String month = months[dateTime.month - 1];
+//   NexusUser user = mapOfUsers[post.uid];
+//   return Container(
+//     height: displayHeight(context) * 0.725,
+//     width: displayWidth(context),
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(25),
+//       color: Colors.grey[200],
+//     ),
+//     child: Center(
+//       child: Container(
+//         decoration: BoxDecoration(
+//           borderRadius: BorderRadius.circular(25),
+//           color: Colors.white,
+//         ),
+//         height: displayHeight(context) * 0.685,
+//         width: displayWidth(context) * 0.84,
+//         child: Padding(
+//           padding: const EdgeInsets.all(5.0),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 crossAxisAlignment: CrossAxisAlignment.center,
+//                 children: [
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.start,
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//                       InkWell(
+//                         onTap: () {
+//                           if (myUid != user.uid) {
+//                             Navigator.push(
+//                                 context,
+//                                 MaterialPageRoute(
+//                                   builder: (context) => userProfile(
+//                                     uid: user.uid,
+//                                   ),
+//                                 ));
+//                           }
+//                         },
+//                         child: (user.dp != '')
+//                             ? CircleAvatar(
+//                                 backgroundColor: Colors.grey[200],
+//                                 radius: displayWidth(context) * 0.045,
+//                                 backgroundImage: NetworkImage(user.dp),
+//                               )
+//                             : CircleAvatar(
+//                                 radius: displayWidth(context) * 0.045,
+//                                 backgroundColor: Colors.grey[200],
+//                                 child: Icon(
+//                                   Icons.person,
+//                                   color: Colors.orange[300],
+//                                   size: displayWidth(context) * 0.05,
+//                                 ),
+//                               ),
+//                       ),
+//                       VerticalDivider(
+//                         width: displayWidth(context) * 0.028,
+//                       ),
+//                       InkWell(
+//                         onTap: () {
+//                           if (myUid != user.uid) {
+//                             Navigator.push(
+//                                 context,
+//                                 MaterialPageRoute(
+//                                   builder: (context) => userProfile(
+//                                     uid: user.uid,
+//                                   ),
+//                                 ));
+//                           }
+//                         },
+//                         child: Text(
+//                           user.username,
+//                           style: TextStyle(
+//                               color: Colors.black,
+//                               fontSize: displayWidth(context) * 0.035,
+//                               fontWeight: FontWeight.bold),
+//                         ),
+//                       ),
+//                       VerticalDivider(
+//                         width: displayWidth(context) * 0.005,
+//                       ),
+//                       (user.followers.length >= 4)
+//                           ? Icon(
+//                               Icons.verified,
+//                               color: Colors.orange[400],
+//                               size: displayWidth(context) * 0.0485,
+//                             )
+//                           : const SizedBox(),
+//                     ],
+//                   ),
+//                   IconButton(
+//                     onPressed: () {
+//                       showModalBottomSheet(
+//                           shape: const RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.only(
+//                                   topRight: Radius.circular(15),
+//                                   topLeft: Radius.circular(15))),
+//                           context: context,
+//                           builder: (context) {
+//                             return Container(
+//                               height: displayHeight(context) * 0.2,
+//                               child: Center(
+//                                 child: Padding(
+//                                   padding: const EdgeInsets.all(8.0),
+//                                 ),
+//                               ),
+//                             );
+//                           });
+//                     },
+//                     icon: Icon(Icons.more_vert),
+//                     color: Colors.grey[600],
+//                   ),
+//                 ],
+//               ),
+//               Opacity(
+//                 opacity: 0.0,
+//                 child: Divider(
+//                   height: displayHeight(context) * 0.02,
+//                 ),
+//               ),
+//               Center(
+//                 child: Container(
+//                     height: displayHeight(context) * 0.03,
+//                     width: displayWidth(context) * 0.68,
+//                     child: Text(
+//                       post.caption,
+//                       maxLines: 1,
+//                       overflow: TextOverflow.ellipsis,
+//                       style: TextStyle(
+//                           fontSize: displayWidth(context) * 0.034,
+//                           color: Colors.black87,
+//                           fontWeight: FontWeight.w600),
+//                     )),
+//               ),
+//               Opacity(
+//                 opacity: 0.0,
+//                 child: Divider(
+//                   height: displayHeight(context) * 0.02,
+//                 ),
+//               ),
+//               Center(
+//                 child: InkWell(
+//                   onTap: () {
+//                     showDialog(
+//                       context: context,
+//                       builder: (context) {
+//                         return BackdropFilter(
+//                           filter: ImageFilter.blur(
+//                             sigmaX: 10,
+//                             sigmaY: 10,
+//                           ),
+//                           child: Dialog(
+//                             insetAnimationCurve: Curves.easeInOutQuad,
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 5,
+//                             backgroundColor: Colors.transparent,
+//                             child: ClipRRect(
+//                               borderRadius: BorderRadius.circular(15),
+//                               child: AspectRatio(
+//                                 aspectRatio: 16 / 9,
+//                                 child: BetterPlayer(controller: _betterPlayerController),
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       },
+//                     );
+//                   },
+//                   onDoubleTap: () {
+//                     if (post.likes.contains(myUid)) {
+//                       Provider.of<manager>(context, listen: false)
+//                           .dislikePost(myUid, post.uid, post.video_id, 'feed');
+//                     } else {
+//                       Provider.of<manager>(context, listen: false)
+//                           .likePost(myUid, post.uid, post.video_id, 'feed');
+//                     }
+//                   },
+//                   child: ClipRRect(
+//                     borderRadius: BorderRadius.circular(25),
+//                     child: CachedNetworkImage(
+//                       imageUrl: post.image,
+//                       height: displayHeight(context) * 0.402,
+//                       width: displayWidth(context) * 0.8,
+//                       fit: BoxFit.cover,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//               //Divider(),
+//               Padding(
+//                 padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+//                 child: Container(
+//                   height: displayHeight(context) * 0.075,
+//                   width: displayWidth(context) * 0.8,
+//                   color: Colors.transparent,
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.start,
+//                         children: [
+//                           GestureDetector(
+//                             onTap: () {
+//                               if (post.likes.contains(myUid)) {
+//                                 Provider.of<manager>(context, listen: false)
+//                                     .dislikePost(
+//                                         myUid, post.uid, post.video_id, 'feed');
+//                               } else {
+//                                 Provider.of<manager>(context, listen: false)
+//                                     .likePost(
+//                                         myUid, post.uid, post.video_id, 'feed');
+//                               }
+//                             },
+//                             child: (post.likes.contains(myUid))
+//                                 ? CircleAvatar(
+//                                     backgroundColor: Colors.transparent,
+//                                     radius: displayWidth(context) * 0.04,
+//                                     child: Center(
+//                                       child: Image.asset(
+//                                         'images/like.png',
+//                                         height: displayHeight(context) * 0.035,
+//                                       ),
+//                                     ),
+//                                   )
+//                                 : CircleAvatar(
+//                                     backgroundColor: Colors.transparent,
+//                                     radius: displayWidth(context) * 0.04,
+//                                     child: Center(
+//                                       child: Image.asset(
+//                                         'images/like_out.png',
+//                                         height: displayHeight(context) * 0.035,
+//                                       ),
+//                                     ),
+//                                   ),
+//                           ),
+//                           const Opacity(opacity: 0.0, child: VerticalDivider()),
+//                           InkWell(
+//                             onTap: () {
+//                               Navigator.push(
+//                                   context,
+//                                   MaterialPageRoute(
+//                                     builder: (context) => CommentScreen(
+//                                       postOwner: user,
+//                                       postId: post.video_id,
+//                                     ),
+//                                   ));
+//                             },
+//                             child: CircleAvatar(
+//                               backgroundColor: Colors.transparent,
+//                               radius: displayWidth(context) * 0.04,
+//                               child: Center(
+//                                 child: Image.asset(
+//                                   'images/comment.png',
+//                                   height: displayHeight(context) * 0.035,
+//                                 ),
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                       CircleAvatar(
+//                         backgroundColor: Colors.transparent,
+//                         radius: displayWidth(context) * 0.04,
+//                         child: InkWell(
+//                           onTap: () {
+//                             if (savedPosts.containsKey(post.video_id)) {
+//                               Provider.of<manager>(context, listen: false)
+//                                   .unsavePost(post.video_id, myUid);
+//                             } else {}
+//                           },
+//                           child: Center(
+//                             child: Center(
+//                                 child: (savedPosts.containsKey(post.video_id))
+//                                     ? Image.asset(
+//                                         'images/bookmark.png',
+//                                         height: displayHeight(context) * 0.035,
+//                                       )
+//                                     : Image.asset(
+//                                         'images/bookmark_out.png',
+//                                         height: displayHeight(context) * 0.035,
+//                                       )),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//               Padding(
+//                 padding: const EdgeInsets.only(left: 12.0, right: 12),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     InkWell(
+//                       onTap: () {
+//                         Navigator.push(
+//                             context,
+//                             MaterialPageRoute(
+//                               builder: (context) => usersWhoLikedScreen(
+//                                 usersWhoLiked: post.likes,
+//                               ),
+//                             ));
+//                       },
+//                       child: Text(
+//                         post.likes.length.toString() + ' likes',
+//                         style: TextStyle(
+//                             color: Colors.black,
+//                             fontSize: displayWidth(context) * 0.035,
+//                             fontWeight: FontWeight.bold),
+//                       ),
+//                     ),
+//                     (ifPostedToday(post.dateOfPost))
+//                         ? Text(displayTime(post.dateOfPost),
+//                             style: TextStyle(
+//                               color: Colors.black54,
+//                               fontWeight: FontWeight.w600,
+//                               fontSize: displayWidth(context) * 0.033,
+//                             ))
+//                         : Text(
+//                             '${day} ${month} ${year}',
+//                             style: TextStyle(
+//                               color: Colors.black54,
+//                               fontWeight: FontWeight.w600,
+//                               fontSize: displayWidth(context) * 0.033,
+//                             ),
+//                           ),
+//                   ],
+//                 ),
+//               )
+//             ],
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
